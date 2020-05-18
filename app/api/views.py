@@ -348,6 +348,11 @@ class TextDownloadAPI(APIView):
         else:
             raise ValidationError('format {} is invalid.'.format(format))
 
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
+    lookup_url_kwarg = 'user_id'
+    permission_classes = (IsAuthenticated, IsProjectAdmin)
 
 class Users(generics.ListCreateAPIView):
     serializer_class = UserSerializer

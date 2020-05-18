@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import Me, Features, Users
+from .views import Me, Features, Users, UserDetail
 from .views import ProjectList, ProjectDetail
 from .views import LabelList, LabelDetail, ApproveLabelsAPI, LabelUploadAPI
 from .views import DocumentList, DocumentDetail
@@ -18,6 +18,7 @@ urlpatterns = [
     path('cloud-upload', CloudUploadAPI.as_view(), name='cloud_uploader'),
     path('projects', ProjectList.as_view(), name='project_list'),
     path('users', Users.as_view(), name='user_list'),
+    path('users/<int:user_id>', UserDetail.as_view(), name='user_detail'),
     path('roles', Roles.as_view(), name='roles'),
     path('projects/<int:project_id>', ProjectDetail.as_view(), name='project_detail'),
     path('projects/<int:project_id>/statistics',
