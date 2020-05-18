@@ -25,6 +25,7 @@ from .serializers import ProjectPolymorphicSerializer, RoleMappingSerializer, Ro
 from .utils import CSVParser, ExcelParser, JSONParser, PlainTextParser, CoNLLParser, iterable_to_io
 from .utils import JSONLRenderer
 from .utils import JSONPainter, CSVPainter
+from django.contrib.auth.backends import UserModel
 
 IsInProjectReadOnlyOrAdmin = (IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin)
 IsInProjectOrAdmin = (IsAnnotator | IsAnnotationApprover | IsProjectAdmin)
@@ -348,8 +349,14 @@ class TextDownloadAPI(APIView):
             raise ValidationError('format {} is invalid.'.format(format))
 
 
-class Users(APIView):
+class Users(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    pagination_class = None
     permission_classes = [IsAuthenticated & IsProjectAdmin]
+    queryset = UserModel.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(**self.request.data)
 
     def get(self, request, *args, **kwargs):
         queryset = User.objects.all()

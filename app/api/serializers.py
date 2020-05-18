@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import UserModel
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_polymorphic.serializers import PolymorphicSerializer
@@ -12,6 +13,11 @@ from .models import DocumentAnnotation, SequenceAnnotation, Seq2seqAnnotation
 
 
 class UserSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        validated_data = {k: v[0] if isinstance(v, list) else v for k, v in validated_data.items()}
+        user = UserModel.objects.create_user(**validated_data)
+        return user
 
     class Meta:
         model = get_user_model()
